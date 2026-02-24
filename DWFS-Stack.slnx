@@ -1,3 +1,7 @@
 <Solution>
+  <Project Path="DWFSDatabase/DWFSDatabase.sqlproj" Id="e3e6235b-36be-4456-a6ef-237ab097eafb">
+    <Build />
+    <Deploy />
+  </Project>
   <Project Path="DWFSDataManager/DWFSDataManager.csproj" Id="59d0b04d-db1d-43c9-82b3-77b7166db9eb" />
 </Solution>
