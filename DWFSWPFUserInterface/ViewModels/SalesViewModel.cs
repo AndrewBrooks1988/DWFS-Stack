@@ -1,4 +1,6 @@
 ﻿using Caliburn.Micro;
+using DWFSWPFUserInterface.Library.Api;
+using DWFSWPFUserInterface.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,17 +13,40 @@ namespace DWFSWPFUserInterface.ViewModels
     public class SalesViewModel : Screen
     {
 
-        //Private Backing fields
-		private BindingList<string> _products;
-        private BindingList<string> _cart;
-        private int _itemQuantity;
+        //Dependancy injection private Backing fields
+        IProductEndpoint _productEndpoint;              //API 
+        private BindingList<ProductModel> _products;    //Products List
+        private BindingList<ProductModel> _cart;        //Cart List
+        private int _itemQuantity;                      //ItemQuantity
+
+
 
         //--------------------------------//
-        //Public methods
+        //Methods
         //--------------------------------//
 
-        //Products
-        public BindingList<string> Products
+        //API Connection for Products
+        public SalesViewModel(IProductEndpoint productEndpoint)
+        {
+            _productEndpoint = productEndpoint;
+        }
+
+        //Load Product List
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        //Wait for product listings
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndpoint.GetAll();
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+        //Products List binding
+        public BindingList<ProductModel> Products
 		{
 			get { return _products; }
 			set 
@@ -30,10 +55,9 @@ namespace DWFSWPFUserInterface.ViewModels
 				NotifyOfPropertyChange(() => Products);
 			}
 		}
-        //--------------------------------
 
-        //Cart
-        public BindingList<string> Cart
+        //Cart List binding
+        public BindingList<ProductModel> Cart
         {
             get { return _cart; }
             set 
@@ -42,9 +66,8 @@ namespace DWFSWPFUserInterface.ViewModels
                 NotifyOfPropertyChange(() => Cart);
             }
         }
-        //--------------------------------
 
-        //Item Quantity	
+        //Item Quantity	binding
         public int ItemQuantity
 		{
 			get { return _itemQuantity; }
@@ -54,9 +77,8 @@ namespace DWFSWPFUserInterface.ViewModels
 				NotifyOfPropertyChange(() => ItemQuantity);
 			}
 		}
-        //--------------------------------
 
-        //SubTotal
+        //SubTotal binding
         public string Subtotal
         {
             get
@@ -65,9 +87,8 @@ namespace DWFSWPFUserInterface.ViewModels
                 return "$0.00";
             }
         }
-        //--------------------------------
 
-        //Add to Cart Button
+        //Add to Cart Button binding
         public bool CanAddToCart
         {
             get
@@ -86,9 +107,8 @@ namespace DWFSWPFUserInterface.ViewModels
 		{
 
 		}
-        //--------------------------------
 
-        //Remove from cart button
+        //Remove from cart button binding
         public bool CanRemoveFromCart
         {
             get
@@ -106,9 +126,8 @@ namespace DWFSWPFUserInterface.ViewModels
         {
 
         }
-        //--------------------------------
 
-        //Checkout
+        //Checkout binding
         public bool CanCheckOut
         {
             get
@@ -126,6 +145,5 @@ namespace DWFSWPFUserInterface.ViewModels
         {
 
         }
-        //--------------------------------
     }
 }
