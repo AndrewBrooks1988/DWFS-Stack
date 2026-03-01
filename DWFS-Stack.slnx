@@ -5,5 +5,6 @@
   </Project>
   <Project Path="DWFSDataManager.Library/DWFSDataManager.Library.csproj" Id="cb1d73d1-4929-4052-9bab-902dce43fd8f" />
   <Project Path="DWFSDataManager/DWFSDataManager.csproj" Id="59d0b04d-db1d-43c9-82b3-77b7166db9eb" />
+  <Project Path="DWFSWPFUserInterface.Library/DWFSWPFUserInterface.Library.csproj" Id="ed4fbc13-4893-48ec-a1d8-5637302792e6" />
   <Project Path="DWFSWPFUserInterface/DWFSWPFUserInterface.csproj" Id="fea993ba-423a-448b-a5f9-51f61b39db07" />
 </Solution>

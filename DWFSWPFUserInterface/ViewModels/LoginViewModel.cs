@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DWFSWPFUserInterface.Helpers;
+using DWFSWPFUserInterface.Library.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +91,9 @@ namespace DWFSWPFUserInterface.ViewModels
 			{
                 ErrorMessage = string.Empty;
                 var result = await _apiHelper.Authenticate(UserName, Password);
+
+				// CApture more information about the user
+				await _apiHelper.GetLoggedInUserInfo(result.Access_Token);
 			}
 			catch (Exception ex)
 			{				
