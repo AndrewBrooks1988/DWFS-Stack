@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DWFSWPFUserInterface.Library.Api;
+using DWFSWPFUserInterface.Library.Helpers;
 using DWFSWPFUserInterface.Library.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace DWFSWPFUserInterface.ViewModels
 
         //Dependancy injection private Backing fields
         IProductEndpoint _productEndpoint;                                                  //API 
+        IConfigHelper _configHelper;
         private BindingList<ProductModel> _products;                                        //Products List
         private ProductModel _selectedProduct;                                              //Selected Product
         private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();        //Cart List
@@ -27,9 +29,10 @@ namespace DWFSWPFUserInterface.ViewModels
         //--------------------------------//
 
         //API Connection for Products
-        public SalesViewModel(IProductEndpoint productEndpoint)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
         {
             _productEndpoint = productEndpoint;
+            _configHelper = configHelper;
         }
 
         //Load Product List
@@ -97,13 +100,55 @@ namespace DWFSWPFUserInterface.ViewModels
         {
             get
             {
-                decimal subTotal = 0;
-                foreach (var item in Cart)
-                {
-                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
-                }
+                //NB: this would be the TOTAL for a tax system like GST where the price is INCLUSIVE of tax
+                return CalculateSubTotal().ToString("C");
+            }
+        }
+        private decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
+            foreach (var item in Cart)
+            {
+                subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+            }
+            return subTotal;
+        }
+        //Calculate Tax
+        public string Tax
+        {
+            get
+            {              
+                return CalculateTax().ToString("C");
+            }
+        }
 
-                return subTotal.ToString("C");
+        private decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRate()/100;
+
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    //This is for a tax system like GST in where the retail price is INCLUSIVE of the tax
+                    taxAmount += ((item.Product.RetailPrice * item.QuantityInCart)                  // Get's the Total
+                        - (item.Product.RetailPrice * item.QuantityInCart / ( 1 +  taxRate)));        // & subtracts the subtotal
+
+
+                    ////This is for a tax system like VAT where the the retail price is NOT INCLUSIVE of the tax
+                    //taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate); 
+                }
+            }
+            return taxAmount;
+        }
+
+        public string Total         //Only required if Retail Price is Pre Tax
+        {
+            get
+            {
+                decimal total = CalculateSubTotal() + CalculateTax();
+                return total.ToString("C");
             }
         }
 
@@ -152,6 +197,8 @@ namespace DWFSWPFUserInterface.ViewModels
             SelectedProduct.QuantityInStock -= ItemQuantity;
             ItemQuantity = 1;
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         //Remove from cart button binding
@@ -171,6 +218,8 @@ namespace DWFSWPFUserInterface.ViewModels
         public void RemoveFromCart()
         {
             NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         //Checkout binding

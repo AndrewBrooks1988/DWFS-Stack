@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using DWFSWPFUserInterface.Helpers;
 using DWFSWPFUserInterface.Library.Api;
+using DWFSWPFUserInterface.Library.Helpers;
 using DWFSWPFUserInterface.Library.Models;
 using DWFSWPFUserInterface.ViewModels;
 using System;
@@ -36,6 +37,7 @@ namespace DWFSWPFUserInterface
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>();
 
             GetType().Assembly.GetTypes()
