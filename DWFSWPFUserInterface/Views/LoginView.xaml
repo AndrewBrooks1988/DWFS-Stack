@@ -50,7 +50,7 @@
         
         <!--Login Button Row-->
         <Button Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Padding="25 5" 
-                HorizontalAlignment="Center" x:Name="LogIn" FontFamily="Segoe UI Light">
+                HorizontalAlignment="Center" x:Name="LogIn" FontFamily="Segoe UI Light" IsDefault="True">
             Login
         </Button>
     </Grid>
