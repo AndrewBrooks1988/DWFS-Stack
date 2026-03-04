@@ -6,5 +6,6 @@
     [SubTotal] MONEY NOT NULL,
     [Shipping] MONEY NULL,
     [Tax] MONEY NOT NULL, 
-    [Total] MONEY NOT NULL
+    [Total] MONEY NOT NULL, 
+    CONSTRAINT [FK_Sale_ToUser] FOREIGN KEY (CashierId ) REFERENCES [Users](Id)
 )
