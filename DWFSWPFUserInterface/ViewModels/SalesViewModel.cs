@@ -127,19 +127,26 @@ namespace DWFSWPFUserInterface.ViewModels
             decimal taxAmount = 0;
             decimal taxRate = _configHelper.GetTaxRate()/100;
 
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    //This is for a tax system like GST in where the retail price is INCLUSIVE of the tax
-                    taxAmount += ((item.Product.RetailPrice * item.QuantityInCart)                  // Get's the Total
-                        - (item.Product.RetailPrice * item.QuantityInCart / ( 1 +  taxRate)));        // & subtracts the subtotal
+
+            //foreach (var item in Cart)
+            //{
+            //    if (item.Product.IsTaxable)
+            //    {
+            //        //This is for a tax system like GST in where the retail price is INCLUSIVE of the tax
+            //        taxAmount += ((item.Product.RetailPrice * item.QuantityInCart)                  // Get's the Total
+            //            - (item.Product.RetailPrice * item.QuantityInCart / ( 1 +  taxRate)));        // & subtracts the subtotal
 
 
-                    ////This is for a tax system like VAT where the the retail price is NOT INCLUSIVE of the tax
-                    //taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate); 
-                }
-            }
+            //        ////This is for a tax system like VAT where the the retail price is NOT INCLUSIVE of the tax
+            //        //taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate); 
+            //    }
+            //}
+
+            //Tax Type VAT
+            taxAmount = Cart
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+
             return taxAmount;
         }
 
