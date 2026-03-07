@@ -16,6 +16,7 @@ namespace DWFSWPFUserInterface.ViewModels
 
         //Dependancy injection private Backing fields
         IProductEndpoint _productEndpoint;                                                  //API 
+        ISaleEndpoint _saleEndpoint;
         IConfigHelper _configHelper;
         private BindingList<ProductModel> _products;                                        //Products List
         private ProductModel _selectedProduct;                                              //Selected Product
@@ -29,9 +30,10 @@ namespace DWFSWPFUserInterface.ViewModels
         //--------------------------------//
 
         //API Connection for Products
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _productEndpoint = productEndpoint;
+            _saleEndpoint = saleEndpoint;
             _configHelper = configHelper;
         }
 
@@ -206,6 +208,7 @@ namespace DWFSWPFUserInterface.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         //Remove from cart button binding
@@ -227,6 +230,7 @@ namespace DWFSWPFUserInterface.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         //Checkout binding
@@ -237,15 +241,30 @@ namespace DWFSWPFUserInterface.ViewModels
                 bool output = false;
 
                 //Make sure something is in the cart
-
+                if(Cart.Count > 0)
+                {
+                    output = true;
+                }
 
                 return output;
             }
         }
 
-        public void CheckOut()
+        public async Task CheckOut()
         {
+            // Create a SaleModel and post to the API
+            SaleModel sale = new SaleModel();
 
+            foreach(var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+
+            await _saleEndpoint.PostSale(sale);
         }
     }
 }

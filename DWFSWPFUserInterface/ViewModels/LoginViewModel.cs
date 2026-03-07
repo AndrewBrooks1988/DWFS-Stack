@@ -13,8 +13,8 @@ namespace DWFSWPFUserInterface.ViewModels
 {
     public class LoginViewModel : Screen
     {
-		private string _userName;
-        private string _password;
+		private string _userName = "andrewjbrooks1988@gmail.com";
+        private string _password = "Andrew35!";
 		private IAPIHelper _apiHelper;
 		IEventAggregator _events;
         public LoginViewModel(IAPIHelper apiHelper, IEventAggregator events)

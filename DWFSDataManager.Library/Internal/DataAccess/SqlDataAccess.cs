@@ -40,5 +40,10 @@ namespace DWFSDataManager.Library.Internal.DataAccess
                     commandType: CommandType.StoredProcedure);
             }
         }
+
+        internal void SaveData<T1, T2>(string v1, object value, string v2)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
